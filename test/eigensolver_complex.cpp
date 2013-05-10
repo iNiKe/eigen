@@ -41,9 +41,6 @@ template<typename MatrixType> void eigensolver(const MatrixType& m)
 
   typedef typename MatrixType::Scalar Scalar;
   typedef typename NumTraits<Scalar>::Real RealScalar;
-  typedef Matrix<Scalar, MatrixType::RowsAtCompileTime, 1> VectorType;
-  typedef Matrix<RealScalar, MatrixType::RowsAtCompileTime, 1> RealVectorType;
-  typedef typename std::complex<typename NumTraits<typename MatrixType::Scalar>::Real> Complex;
 
   MatrixType a = MatrixType::Random(rows,cols);
   MatrixType symmA =  a.adjoint() * a;
@@ -58,6 +55,17 @@ template<typename MatrixType> void eigensolver(const MatrixType& m)
   // Note: If MatrixType is real then a.eigenvalues() uses EigenSolver and thus
   // another algorithm so results may differ slightly
   verify_is_approx_upto_permutation(a.eigenvalues(), ei1.eigenvalues());
+
+  ComplexEigenSolver<MatrixType> ei2;
+  ei2.setMaxIterations(ComplexSchur<MatrixType>::m_maxIterationsPerRow * rows).compute(a);
+  VERIFY_IS_EQUAL(ei2.info(), Success);
+  VERIFY_IS_EQUAL(ei2.eigenvectors(), ei1.eigenvectors());
+  VERIFY_IS_EQUAL(ei2.eigenvalues(), ei1.eigenvalues());
+  if (rows > 2) {
+    ei2.setMaxIterations(1).compute(a);
+    VERIFY_IS_EQUAL(ei2.info(), NoConvergence);
+    VERIFY_IS_EQUAL(ei2.getMaxIterations(), 1);
+  }
 
   ComplexEigenSolver<MatrixType> eiNoEivecs(a, false);
   VERIFY_IS_EQUAL(eiNoEivecs.info(), Success);

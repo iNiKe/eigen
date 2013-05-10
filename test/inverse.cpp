@@ -13,6 +13,7 @@
 
 template<typename MatrixType> void inverse(const MatrixType& m)
 {
+  using std::abs;
   typedef typename MatrixType::Index Index;
   /* this test covers the following files:
      Inverse.h
@@ -21,8 +22,6 @@ template<typename MatrixType> void inverse(const MatrixType& m)
   Index cols = m.cols();
 
   typedef typename MatrixType::Scalar Scalar;
-  typedef typename NumTraits<Scalar>::Real RealScalar;
-  typedef Matrix<Scalar, MatrixType::ColsAtCompileTime, 1> VectorType;
 
   MatrixType m1(rows, cols),
              m2(rows, cols),
@@ -42,6 +41,9 @@ template<typename MatrixType> void inverse(const MatrixType& m)
   VERIFY_IS_APPROX(MatrixType(m1.transpose().inverse()), MatrixType(m1.inverse().transpose()));
 
 #if !defined(EIGEN_TEST_PART_5) && !defined(EIGEN_TEST_PART_6)
+  typedef typename NumTraits<Scalar>::Real RealScalar;
+  typedef Matrix<Scalar, MatrixType::ColsAtCompileTime, 1> VectorType;
+  
   //computeInverseAndDetWithCheck tests
   //First: an invertible matrix
   bool invertible;
@@ -63,7 +65,7 @@ template<typename MatrixType> void inverse(const MatrixType& m)
   MatrixType m3 = v3*v3.transpose(), m4(rows,cols);
   m3.computeInverseAndDetWithCheck(m4, det, invertible);
   VERIFY( rows==1 ? invertible : !invertible );
-  VERIFY_IS_MUCH_SMALLER_THAN(internal::abs(det-m3.determinant()), RealScalar(1));
+  VERIFY_IS_MUCH_SMALLER_THAN(abs(det-m3.determinant()), RealScalar(1));
   m3.computeInverseWithCheck(m4, invertible);
   VERIFY( rows==1 ? invertible : !invertible );
 #endif

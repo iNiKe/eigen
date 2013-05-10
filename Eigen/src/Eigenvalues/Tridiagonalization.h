@@ -345,6 +345,7 @@ namespace internal {
 template<typename MatrixType, typename CoeffVectorType>
 void tridiagonalization_inplace(MatrixType& matA, CoeffVectorType& hCoeffs)
 {
+  using internal::conj;
   typedef typename MatrixType::Index Index;
   typedef typename MatrixType::Scalar Scalar;
   typedef typename MatrixType::RealScalar RealScalar;
@@ -425,8 +426,6 @@ struct tridiagonalization_inplace_selector;
 template<typename MatrixType, typename DiagonalType, typename SubDiagonalType>
 void tridiagonalization_inplace(MatrixType& mat, DiagonalType& diag, SubDiagonalType& subdiag, bool extractQ)
 {
-  typedef typename MatrixType::Index Index;
-  //Index n = mat.rows();
   eigen_assert(mat.cols()==mat.rows() && diag.size()==mat.rows() && subdiag.size()==mat.rows()-1);
   tridiagonalization_inplace_selector<MatrixType>::run(mat, diag, subdiag, extractQ);
 }
@@ -467,6 +466,7 @@ struct tridiagonalization_inplace_selector<MatrixType,3,false>
   template<typename DiagonalType, typename SubDiagonalType>
   static void run(MatrixType& mat, DiagonalType& diag, SubDiagonalType& subdiag, bool extractQ)
   {
+    using std::sqrt;
     diag[0] = mat(0,0);
     RealScalar v1norm2 = abs2(mat(2,0));
     if(v1norm2 == RealScalar(0))

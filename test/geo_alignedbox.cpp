@@ -71,7 +71,6 @@ void alignedboxCastTests(const BoxType& _box)
   // casting  
   typedef typename BoxType::Index Index;
   typedef typename BoxType::Scalar Scalar;
-  typedef typename NumTraits<Scalar>::Real RealScalar;
   typedef Matrix<Scalar, BoxType::AmbientDimAtCompileTime, 1> VectorType;
 
   const Index dim = _box.dim();
@@ -109,7 +108,7 @@ void specificTest1()
 
     VERIFY_IS_APPROX( 14.0f, box.volume() );
     VERIFY_IS_APPROX( 53.0f, box.diagonal().squaredNorm() );
-    VERIFY_IS_APPROX( internal::sqrt( 53.0f ), box.diagonal().norm() );
+    VERIFY_IS_APPROX( std::sqrt( 53.0f ), box.diagonal().norm() );
 
     VERIFY_IS_APPROX( m, box.corner( BoxType::BottomLeft ) );
     VERIFY_IS_APPROX( M, box.corner( BoxType::TopRight ) );

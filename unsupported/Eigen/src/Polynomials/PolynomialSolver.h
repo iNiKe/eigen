@@ -69,10 +69,11 @@ class PolynomialSolverBase
     inline void realRoots( Stl_back_insertion_sequence& bi_seq,
         const RealScalar& absImaginaryThreshold = NumTraits<Scalar>::dummy_precision() ) const
     {
+      using std::abs;
       bi_seq.clear();
       for(Index i=0; i<m_roots.size(); ++i )
       {
-        if( internal::abs( m_roots[i].imag() ) < absImaginaryThreshold ){
+        if( abs( m_roots[i].imag() ) < absImaginaryThreshold ){
           bi_seq.push_back( m_roots[i].real() ); }
       }
     }
@@ -118,13 +119,14 @@ class PolynomialSolverBase
         bool& hasArealRoot,
         const RealScalar& absImaginaryThreshold = NumTraits<Scalar>::dummy_precision() ) const
     {
+      using std::abs;
       hasArealRoot = false;
       Index res=0;
       RealScalar abs2(0);
 
       for( Index i=0; i<m_roots.size(); ++i )
       {
-        if( internal::abs( m_roots[i].imag() ) < absImaginaryThreshold )
+        if( abs( m_roots[i].imag() ) < absImaginaryThreshold )
         {
           if( !hasArealRoot )
           {
@@ -144,7 +146,7 @@ class PolynomialSolverBase
         }
         else
         {
-          if( internal::abs( m_roots[i].imag() ) < internal::abs( m_roots[res].imag() ) ){
+          if( abs( m_roots[i].imag() ) < abs( m_roots[res].imag() ) ){
             res = i; }
         }
       }
@@ -158,13 +160,14 @@ class PolynomialSolverBase
         bool& hasArealRoot,
         const RealScalar& absImaginaryThreshold = NumTraits<Scalar>::dummy_precision() ) const
     {
+      using std::abs;
       hasArealRoot = false;
       Index res=0;
       RealScalar val(0);
 
       for( Index i=0; i<m_roots.size(); ++i )
       {
-        if( internal::abs( m_roots[i].imag() ) < absImaginaryThreshold )
+        if( abs( m_roots[i].imag() ) < absImaginaryThreshold )
         {
           if( !hasArealRoot )
           {
@@ -184,7 +187,7 @@ class PolynomialSolverBase
         }
         else
         {
-          if( internal::abs( m_roots[i].imag() ) < internal::abs( m_roots[res].imag() ) ){
+          if( abs( m_roots[i].imag() ) < abs( m_roots[res].imag() ) ){
             res = i; }
         }
       }
@@ -341,7 +344,7 @@ class PolynomialSolver : public PolynomialSolverBase<_Scalar,_Deg>
     template< typename OtherPolynomial >
     void compute( const OtherPolynomial& poly )
     {
-      assert( Scalar(0) != poly[poly.size()-1] );
+      eigen_assert( Scalar(0) != poly[poly.size()-1] );
       internal::companion<Scalar,_Deg> companion( poly );
       companion.balance();
       m_eigenSolver.compute( companion.denseMatrix() );
@@ -373,7 +376,7 @@ class PolynomialSolver<_Scalar,1> : public PolynomialSolverBase<_Scalar,1>
     template< typename OtherPolynomial >
     void compute( const OtherPolynomial& poly )
     {
-      assert( Scalar(0) != poly[poly.size()-1] );
+      eigen_assert( Scalar(0) != poly[poly.size()-1] );
       m_roots[0] = -poly[0]/poly[poly.size()-1];
     }
 
